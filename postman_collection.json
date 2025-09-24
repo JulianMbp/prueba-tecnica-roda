@@ -1,0 +1,785 @@
+{
+	"info": {
+		"_postman_id": "roda-api-collection",
+		"name": "Roda - Cronograma de Pagos API",
+		"description": "Colección completa para probar todos los endpoints de la API de cronograma de pagos de Roda",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Clientes",
+			"item": [
+				{
+					"name": "Listar Clientes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", ""]
+						},
+						"description": "Obtiene la lista de todos los clientes con paginación"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Cliente por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/11/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "11", ""]
+						},
+						"description": "Obtiene los detalles de un cliente específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Cronograma del Cliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/11/cronograma/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "11", "cronograma", ""]
+						},
+						"description": "Obtiene el cronograma completo de pagos de un cliente"
+					},
+					"response": []
+				},
+				{
+					"name": "Resumen del Cliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/11/resumen/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "11", "resumen", ""]
+						},
+						"description": "Obtiene un resumen completo del estado financiero de un cliente"
+					},
+					"response": []
+				},
+				{
+					"name": "Clientes con Mora",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/con_mora/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "con_mora", ""]
+						},
+						"description": "Obtiene todos los clientes que tienen cuotas en mora"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Cliente por Cédula",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/buscar_cliente/?num_doc=10000001",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "buscar_cliente", ""],
+							"query": [
+								{
+									"key": "num_doc",
+									"value": "10000001"
+								}
+							]
+						},
+						"description": "Busca un cliente por número de cédula (solo información básica)"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Cliente con Cronograma",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/buscar_por_cedula/?num_doc=10000001",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "buscar_por_cedula", ""],
+							"query": [
+								{
+									"key": "num_doc",
+									"value": "10000001"
+								}
+							]
+						},
+						"description": "Busca un cliente por cédula y retorna su cronograma completo"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Cliente por Tipo de Documento",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/buscar_cliente/?tipo_doc=CC&num_doc=10000001",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "buscar_cliente", ""],
+							"query": [
+								{
+									"key": "tipo_doc",
+									"value": "CC"
+								},
+								{
+									"key": "num_doc",
+									"value": "10000001"
+								}
+							]
+						},
+						"description": "Busca cliente especificando tipo y número de documento"
+					},
+					"response": []
+				},
+				{
+					"name": "Filtrar Clientes por Cédula",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/?num_doc=10000001",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", ""],
+							"query": [
+								{
+									"key": "num_doc",
+									"value": "10000001"
+								}
+							]
+						},
+						"description": "Filtra clientes por número de cédula en el listado general"
+					},
+					"response": []
+				},
+				{
+					"name": "Buscar Clientes por Nombre",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/?nombre=Cliente",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", ""],
+							"query": [
+								{
+									"key": "nombre",
+									"value": "Cliente"
+								}
+							]
+						},
+						"description": "Busca clientes por nombre (búsqueda parcial)"
+					},
+					"response": []
+				},
+				{
+					"name": "Filtrar Clientes por Ciudad",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/?ciudad=Bogotá",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", ""],
+							"query": [
+								{
+									"key": "ciudad",
+									"value": "Bogotá"
+								}
+							]
+						},
+						"description": "Filtra clientes por ciudad"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Cliente",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"tipo_doc\": \"CC\",\n  \"num_doc\": \"12345678\",\n  \"nombre\": \"Juan Pérez\",\n  \"ciudad\": \"Bogotá\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/clientes/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", ""]
+						},
+						"description": "Crea un nuevo cliente"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gestión de clientes"
+		},
+		{
+			"name": "Créditos",
+			"item": [
+				{
+					"name": "Listar Créditos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/creditos/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "creditos", ""]
+						},
+						"description": "Obtiene la lista de todos los créditos"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Créditos por Cliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/creditos/?cliente_id=11",
+							"host": ["{{base_url}}"],
+							"path": ["api", "creditos", ""],
+							"query": [
+								{
+									"key": "cliente_id",
+									"value": "11"
+								}
+							]
+						},
+						"description": "Filtra créditos por cliente específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Listar Créditos por Producto",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/creditos/?producto=e-bike",
+							"host": ["{{base_url}}"],
+							"path": ["api", "creditos", ""],
+							"query": [
+								{
+									"key": "producto",
+									"value": "e-bike"
+								}
+							]
+						},
+						"description": "Filtra créditos por tipo de producto"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Crédito por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/creditos/21/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "creditos", "21", ""]
+						},
+						"description": "Obtiene los detalles de un crédito específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Cronograma del Crédito",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/creditos/21/cronograma/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "creditos", "21", "cronograma", ""]
+						},
+						"description": "Obtiene el cronograma de pagos de un crédito específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Resumen Financiero del Crédito",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/creditos/21/resumen_financiero/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "creditos", "21", "resumen_financiero", ""]
+						},
+						"description": "Obtiene un resumen financiero completo de un crédito"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gestión de créditos"
+		},
+		{
+			"name": "Cronograma de Pagos",
+			"item": [
+				{
+					"name": "Listar Todo el Cronograma",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cronograma/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cronograma", ""]
+						},
+						"description": "Obtiene todo el cronograma de pagos con paginación"
+					},
+					"response": []
+				},
+				{
+					"name": "Cronograma por Cliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cronograma/?cliente_id=11",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cronograma", ""],
+							"query": [
+								{
+									"key": "cliente_id",
+									"value": "11"
+								}
+							]
+						},
+						"description": "Filtra cronograma por cliente específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Cronograma por Crédito",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cronograma/?credito_id=21",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cronograma", ""],
+							"query": [
+								{
+									"key": "credito_id",
+									"value": "21"
+								}
+							]
+						},
+						"description": "Filtra cronograma por crédito específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Cuotas por Estado",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cronograma/?estado=vencida",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cronograma", ""],
+							"query": [
+								{
+									"key": "estado",
+									"value": "vencida"
+								}
+							]
+						},
+						"description": "Filtra cuotas por estado específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Cronograma por Rango de Fechas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cronograma/?fecha_desde=2025-09-01&fecha_hasta=2025-09-30",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cronograma", ""],
+							"query": [
+								{
+									"key": "fecha_desde",
+									"value": "2025-09-01"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2025-09-30"
+								}
+							]
+						},
+						"description": "Filtra cronograma por rango de fechas de vencimiento"
+					},
+					"response": []
+				},
+				{
+					"name": "Cuotas Vencidas",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cronograma/vencidas/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cronograma", "vencidas", ""]
+						},
+						"description": "Obtiene todas las cuotas vencidas"
+					},
+					"response": []
+				},
+				{
+					"name": "Cuotas Vencidas por Cliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cronograma/vencidas/?cliente_id=11",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cronograma", "vencidas", ""],
+							"query": [
+								{
+									"key": "cliente_id",
+									"value": "11"
+								}
+							]
+						},
+						"description": "Obtiene cuotas vencidas de un cliente específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Cuotas por Estado (Endpoint Específico)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cronograma/por_estado/?estado=pendiente",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cronograma", "por_estado", ""],
+							"query": [
+								{
+									"key": "estado",
+									"value": "pendiente"
+								}
+							]
+						},
+						"description": "Obtiene cuotas filtradas por estado usando endpoint específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Calcular Mora de Cuota",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cronograma/193/calcular_mora/?tasa_mora=0.02",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cronograma", "193", "calcular_mora", ""],
+							"query": [
+								{
+									"key": "tasa_mora",
+									"value": "0.02"
+								}
+							]
+						},
+						"description": "Calcula el monto de mora para una cuota específica"
+					},
+					"response": []
+				},
+				{
+					"name": "Obtener Cuota por ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cronograma/193/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cronograma", "193", ""]
+						},
+						"description": "Obtiene los detalles de una cuota específica"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para consulta del cronograma de pagos"
+		},
+		{
+			"name": "Pagos",
+			"item": [
+				{
+					"name": "Listar Todos los Pagos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pagos/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pagos", ""]
+						},
+						"description": "Obtiene la lista de todos los pagos realizados"
+					},
+					"response": []
+				},
+				{
+					"name": "Pagos por Cliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pagos/?cliente_id=11",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pagos", ""],
+							"query": [
+								{
+									"key": "cliente_id",
+									"value": "11"
+								}
+							]
+						},
+						"description": "Filtra pagos por cliente específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Pagos por Crédito",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pagos/?credito_id=21",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pagos", ""],
+							"query": [
+								{
+									"key": "credito_id",
+									"value": "21"
+								}
+							]
+						},
+						"description": "Filtra pagos por crédito específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Pagos por Cuota",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pagos/?schedule_id=193",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pagos", ""],
+							"query": [
+								{
+									"key": "schedule_id",
+									"value": "193"
+								}
+							]
+						},
+						"description": "Filtra pagos por cuota específica"
+					},
+					"response": []
+				},
+				{
+					"name": "Crear Nuevo Pago",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"schedule\": 193,\n  \"monto\": 50000,\n  \"medio\": \"app\"\n}"
+						},
+						"url": {
+							"raw": "{{base_url}}/api/pagos/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pagos", ""]
+						},
+						"description": "Crea un nuevo pago para una cuota específica"
+					},
+					"response": []
+				},
+				{
+					"name": "Resumen de Pagos por Cliente",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/pagos/resumen_por_cliente/?cliente_id=11",
+							"host": ["{{base_url}}"],
+							"path": ["api", "pagos", "resumen_por_cliente", ""],
+							"query": [
+								{
+									"key": "cliente_id",
+									"value": "11"
+								}
+							]
+						},
+						"description": "Obtiene un resumen de todos los pagos de un cliente"
+					},
+					"response": []
+				}
+			],
+			"description": "Endpoints para gestión de pagos"
+		},
+		{
+			"name": "Consultas Avanzadas",
+			"item": [
+				{
+					"name": "Dashboard Completo - Cliente 11",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/clientes/11/resumen/",
+							"host": ["{{base_url}}"],
+							"path": ["api", "clientes", "11", "resumen", ""]
+						},
+						"description": "Obtiene un dashboard completo con toda la información del cliente"
+					},
+					"response": []
+				},
+				{
+					"name": "Análisis de Mora - Cliente 11",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cronograma/vencidas/?cliente_id=11",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cronograma", "vencidas", ""],
+							"query": [
+								{
+									"key": "cliente_id",
+									"value": "11"
+								}
+							]
+						},
+						"description": "Analiza las cuotas en mora de un cliente específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Estado de Cuotas - Septiembre 2025",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cronograma/?fecha_desde=2025-09-01&fecha_hasta=2025-09-30&estado=vencida",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cronograma", ""],
+							"query": [
+								{
+									"key": "fecha_desde",
+									"value": "2025-09-01"
+								},
+								{
+									"key": "fecha_hasta",
+									"value": "2025-09-30"
+								},
+								{
+									"key": "estado",
+									"value": "vencida"
+								}
+							]
+						},
+						"description": "Analiza cuotas vencidas en un período específico"
+					},
+					"response": []
+				},
+				{
+					"name": "Créditos Activos",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/creditos/?estado=vigente",
+							"host": ["{{base_url}}"],
+							"path": ["api", "creditos", ""],
+							"query": [
+								{
+									"key": "estado",
+									"value": "vigente"
+								}
+							]
+						},
+						"description": "Obtiene todos los créditos activos"
+					},
+					"response": []
+				},
+				{
+					"name": "Cuotas Pendientes de Pago",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{base_url}}/api/cronograma/por_estado/?estado=pendiente",
+							"host": ["{{base_url}}"],
+							"path": ["api", "cronograma", "por_estado", ""],
+							"query": [
+								{
+									"key": "estado",
+									"value": "pendiente"
+								}
+							]
+						},
+						"description": "Obtiene todas las cuotas pendientes de pago"
+					},
+					"response": []
+				}
+			],
+			"description": "Consultas avanzadas y análisis de datos"
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "base_url",
+			"value": "http://localhost:8000",
+			"type": "string"
+		}
+	]
+}

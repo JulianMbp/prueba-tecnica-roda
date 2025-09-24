@@ -1,26 +1,34 @@
+# Usar la imagen oficial de Python
 FROM python:3.11-slim
 
-# set workdir
+# Establecer variables de entorno
+ENV PYTHONDONTWRITEBYTECODE=1
+ENV PYTHONUNBUFFERED=1
+
+# Establecer directorio de trabajo
 WORKDIR /app
 
-# install system deps
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt-get update && apt-get install -y --no-install-recommends \
-	build-essential \
-	libpq-dev \
-	netcat-openbsd \
-	&& rm -rf /var/lib/apt/lists/*
+# Instalar dependencias del sistema
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends \
+        postgresql-client \
+        build-essential \
+        libpq-dev \
+    && rm -rf /var/lib/apt/lists/*
 
-# copy requirements and install
+# Copiar requirements y instalar dependencias de Python
 COPY requirements.txt /app/
 RUN pip install --no-cache-dir -r requirements.txt
 
-# copy app
-COPY . /app
+# Copiar el proyecto
+COPY . /app/
 
-# make entrypoint executable
-RUN chmod +x /app/entrypoint.sh
+# Crear usuario no-root
+RUN adduser --disabled-password --gecos '' appuser && chown -R appuser /app
+USER appuser
 
-ENV PYTHONUNBUFFERED=1
+# Exponer puerto
+EXPOSE 8000
 
-CMD ["/app/entrypoint.sh", "gunicorn", "-b", "0.0.0.0:8000", "app:app"]
+# Comando por defecto
+CMD ["gunicorn", "--bind", "0.0.0.0:8000", "config.wsgi:application"]

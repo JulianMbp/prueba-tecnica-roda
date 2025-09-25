@@ -5,6 +5,7 @@ import { createContext, ReactNode, useContext, useEffect, useState } from 'react
 interface AuthContextType {
   isAuthenticated: boolean;
   clientInfo: ClientInfo | null;
+  isLoading: boolean;
   login: (clientInfo: ClientInfo) => void;
   logout: () => void;
 }
@@ -22,6 +23,7 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [clientInfo, setClientInfo] = useState<ClientInfo | null>(null);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     // Verificar si hay información guardada en localStorage
@@ -36,6 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
         localStorage.removeItem('roda_client_info');
       }
     }
+    setIsLoading(false);
   }, []);
 
   const login = (clientInfo: ClientInfo) => {
@@ -51,7 +54,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isAuthenticated, clientInfo, login, logout }}>
+    <AuthContext.Provider value={{ isAuthenticated, clientInfo, isLoading, login, logout }}>
       {children}
     </AuthContext.Provider>
   );

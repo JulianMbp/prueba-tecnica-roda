@@ -140,7 +140,7 @@ export default function Home() {
             {/* Vista móvil - Cards apiladas */}
             <div className="block lg:hidden space-y-4">
               {paymentSchedule.map((payment) => (
-                <div key={payment.cuota_id} className="border border-roda-gray-200 rounded-lg p-4 bg-white hover:bg-roda-gray-50 transition-colors">
+                <div key={payment.schedule_id} className="border border-roda-gray-200 rounded-lg p-4 bg-white hover:bg-roda-gray-50 transition-colors">
                   <div className="flex justify-between items-start mb-3">
                     <div>
                       <div className="flex items-center space-x-2">
@@ -148,15 +148,15 @@ export default function Home() {
                         <StatusBadge status={payment.estado} />
                       </div>
                       <div className="text-sm text-roda-gray-600 mt-1">
-                        {payment.producto === 'e-bike' ? '🛵 E-bike' : '🏍️ E-moped'}
+                        {(payment.credit_info?.producto || '').toLowerCase() === 'e-moped' ? '🏍️ E-moped' : '🛵 E-bike'}
                       </div>
                     </div>
                     <div className="text-right">
                       <div className="font-semibold text-roda-gray-900">
-                        {formatCurrency(payment.valor_cuota)}
+                        {formatCurrency(parseFloat(payment.valor_cuota as unknown as string))}
                       </div>
                       <div className="text-sm text-roda-gray-600">
-                        Crédito #{payment.credito_id}
+                        Crédito #{payment.credit_info?.credito_id ?? payment.credito}
                       </div>
                     </div>
                   </div>
@@ -183,7 +183,7 @@ export default function Home() {
                 {/* Table Body */}
                 {paymentSchedule.map((payment) => (
                   <div
-                    key={payment.cuota_id}
+                    key={payment.schedule_id}
                     className="grid grid-cols-10 gap-4 px-4 py-4 hover:bg-roda-gray-50 transition-colors"
                   >
                     <div className="col-span-1 text-sm font-medium text-roda-gray-900">
@@ -191,7 +191,7 @@ export default function Home() {
                     </div>
                     
                     <div className="col-span-2 text-sm text-roda-gray-900">
-                      {payment.producto === 'e-bike' ? '🛵 E-bike' : '🏍️ E-moped'}
+                      {(payment.credit_info?.producto || '').toLowerCase() === 'e-moped' ? '🏍️ E-moped' : '🛵 E-bike'}
                     </div>
                     
                     <div className="col-span-2 text-sm text-roda-gray-900">
@@ -199,11 +199,11 @@ export default function Home() {
                     </div>
                     
                     <div className="col-span-2 text-sm font-medium text-roda-gray-900">
-                      {formatCurrency(payment.valor_cuota)}
+                      {formatCurrency(parseFloat(payment.valor_cuota as unknown as string))}
                     </div>
                     
                     <div className="col-span-2 text-sm text-roda-gray-900">
-                      Crédito #{payment.credito_id}
+                      Crédito #{payment.credit_info?.credito_id ?? payment.credito}
                     </div>
                     
                     <div className="col-span-1">

@@ -18,6 +18,9 @@ export interface ClientSearchResponse {
 }
 
 export interface PaymentSchedule {
+  schedule_id: Key | null | undefined;
+  credit_info: any;
+  credito: any;
   cuota_id: number;
   num_cuota: number;
   fecha_vencimiento: string;

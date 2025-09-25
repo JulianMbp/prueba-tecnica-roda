@@ -435,17 +435,26 @@ export default function SchedulePage() {
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-roda-gray-700">
                         <div className="flex items-center">
                           <span className="mr-2">
-                            {cuota.credit_info?.producto === 'e-bike' ? '🛵' : '🏍️'}
+                            {(cuota.credit_info?.producto || '').toLowerCase() === 'e-moped' ? '🏍️' : '🛵'}
                           </span>
-                          {cuota.credit_info?.producto || 'N/A'}
+                          <span>{cuota.credit_info?.producto ?? '-'}</span>
                         </div>
                       </td>
                       <td className="px-6 py-4 whitespace-nowrap text-sm text-roda-gray-700">
                         <div className="flex flex-col">
-                          <span className="font-medium">#{cuota.credit_info?.credito_id || 'N/A'}</span>
-                          <span className="text-xs text-roda-gray-500">
-                            {formatCurrency(parseFloat(cuota.credit_info?.inversion || '0'))}
-                          </span>
+                          {(() => {
+                            const creditId = cuota.credit_info?.credito_id ?? cuota.credito;
+                            return (
+                              <span className="font-medium">
+                                {creditId ? `Crédito #${creditId}` : 'Crédito -'}
+                              </span>
+                            );
+                          })()}
+                          {cuota.credit_info?.inversion && (
+                            <span className="text-xs text-roda-gray-500">
+                              {formatCurrency(parseFloat(cuota.credit_info.inversion))}
+                            </span>
+                          )}
                         </div>
                       </td>
                     </tr>

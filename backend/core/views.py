@@ -15,6 +15,9 @@ from .serializers import (
 from .services import (
     PaymentScheduleService, CreditoService, ClienteService
 )
+from .pagination import (
+    CustomPageNumberPagination, SmallResultsPagination, LargeResultsPagination
+)
 
 
 class ClienteViewSet(viewsets.ModelViewSet):
@@ -23,6 +26,7 @@ class ClienteViewSet(viewsets.ModelViewSet):
     queryset = Cliente.objects.all()
     serializer_class = ClienteSerializer
     permission_classes = [AllowAny]
+    pagination_class = CustomPageNumberPagination
     
     def get_queryset(self):
         """Filtra clientes según parámetros"""
@@ -171,6 +175,7 @@ class CreditoViewSet(viewsets.ModelViewSet):
     queryset = Credito.objects.all()
     serializer_class = CreditoSerializer
     permission_classes = [AllowAny]
+    pagination_class = CustomPageNumberPagination
     
     def get_queryset(self):
         """Filtra créditos según parámetros"""
@@ -281,6 +286,7 @@ class PaymentScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = PaymentSchedule.objects.all()
     serializer_class = PaymentScheduleSerializer
     permission_classes = [AllowAny]
+    pagination_class = CustomPageNumberPagination
     
     def get_queryset(self):
         """Filtra cronograma según parámetros"""
@@ -372,6 +378,7 @@ class PagoViewSet(viewsets.ModelViewSet):
     
     queryset = Pago.objects.all()
     permission_classes = [AllowAny]
+    pagination_class = SmallResultsPagination
     
     def get_serializer_class(self):
         """Retorna el serializer apropiado según la acción"""

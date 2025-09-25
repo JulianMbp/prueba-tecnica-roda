@@ -4,34 +4,21 @@ import { ClientInfo } from '@/components/search/ClientInfo';
 import { StatusBadge } from '@/components/ui/Badge';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { useAuth } from '@/contexts/AuthContext';
-import { Client, clientService, PaymentSchedule } from '@/services/api';
+import { Client, clientService, PaymentSchedule, PaymentSummary } from '@/services/api';
 import { useRouter } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 
 export default function Home() {
   const { isAuthenticated, clientInfo } = useAuth();
   const router = useRouter();
   const [client, setClient] = useState<Client | null>(null);
   const [paymentSchedule, setPaymentSchedule] = useState<PaymentSchedule[]>([]);
-  const [summary, setSummary] = useState<unknown>(null);
+  const [summary, setSummary] = useState<PaymentSummary | null>(null);
   const [estadoActual, setEstadoActual] = useState<'al_dia' | 'en_mora' | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  useEffect(() => {
-    // Si no está autenticado, redirigir al login
-    if (!isAuthenticated) {
-      router.push('/login');
-      return;
-    }
-
-    // Si está autenticado, cargar la información del cronograma
-    if (clientInfo) {
-      loadClientSchedule();
-    }
-  }, [isAuthenticated, clientInfo, router]);
-
-  const loadClientSchedule = async () => {
+  const loadClientSchedule = useCallback(async () => {
     if (!clientInfo) return;
 
     setIsLoading(true);
@@ -47,13 +34,26 @@ export default function Home() {
       setClient(response.cliente);
       setPaymentSchedule(response.cronograma);
       setSummary(response.resumen);
-      setEstadoActual(response.resumen.cuotas_vencidas > 0 ? 'en_mora' : 'al_dia');
+      setEstadoActual(response.resumen.overdue_schedules > 0 ? 'en_mora' : 'al_dia');
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cargar el cronograma');
     } finally {
       setIsLoading(false);
     }
-  };
+  }, [clientInfo]);
+
+  useEffect(() => {
+    // Si no está autenticado, redirigir al login
+    if (!isAuthenticated) {
+      router.push('/login');
+      return;
+    }
+
+    // Si está autenticado, cargar la información del cronograma
+    if (clientInfo) {
+      loadClientSchedule();
+    }
+  }, [isAuthenticated, clientInfo, router, loadClientSchedule]);
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -140,13 +140,12 @@ export default function Home() {
             <div className="overflow-x-auto">
               <div className="min-w-full divide-y divide-roda-gray-200">
                 {/* Table Header */}
-                <div className="grid grid-cols-12 gap-4 px-4 py-3 bg-roda-gray-50 text-xs font-medium text-roda-gray-500 uppercase tracking-wider">
+                <div className="grid grid-cols-10 gap-4 px-4 py-3 bg-roda-gray-50 text-xs font-medium text-roda-gray-500 uppercase tracking-wider">
                   <div className="col-span-1">Cuota</div>
                   <div className="col-span-2">Producto</div>
                   <div className="col-span-2">Vencimiento</div>
                   <div className="col-span-2">Valor</div>
-                  <div className="col-span-2">Pagado</div>
-                  <div className="col-span-2">Saldo</div>
+                  <div className="col-span-2">Crédito</div>
                   <div className="col-span-1">Estado</div>
                 </div>
 
@@ -154,7 +153,7 @@ export default function Home() {
                 {paymentSchedule.map((payment) => (
                   <div
                     key={payment.cuota_id}
-                    className="grid grid-cols-12 gap-4 px-4 py-4 hover:bg-roda-gray-50 transition-colors"
+                    className="grid grid-cols-10 gap-4 px-4 py-4 hover:bg-roda-gray-50 transition-colors"
                   >
                     <div className="col-span-1 text-sm font-medium text-roda-gray-900">
                       {payment.num_cuota}
@@ -166,16 +165,6 @@ export default function Home() {
                     
                     <div className="col-span-2 text-sm text-roda-gray-900">
                       {formatDate(payment.fecha_vencimiento)}
-                      {payment.dias_vencido > 0 && (
-                        <div className="text-xs text-roda-error">
-                          {payment.dias_vencido} días vencido
-                        </div>
-                      )}
-                      {payment.dias_restantes > 0 && (
-                        <div className="text-xs text-roda-gray-500">
-                          {payment.dias_restantes} días restantes
-                        </div>
-                      )}
                     </div>
                     
                     <div className="col-span-2 text-sm font-medium text-roda-gray-900">
@@ -183,11 +172,7 @@ export default function Home() {
                     </div>
                     
                     <div className="col-span-2 text-sm text-roda-gray-900">
-                      {formatCurrency(payment.monto_pagado)}
-                    </div>
-                    
-                    <div className="col-span-2 text-sm font-medium text-roda-gray-900">
-                      {formatCurrency(payment.saldo_pendiente)}
+                      Crédito #{payment.credito_id}
                     </div>
                     
                     <div className="col-span-1">
@@ -202,32 +187,32 @@ export default function Home() {
             <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4 pt-6 border-t border-roda-gray-200">
               <div className="text-center">
                 <div className="text-2xl font-bold text-roda-black">
-                  {summary?.total_cuotas || 0}
+                  {summary?.total_schedules || 0}
                 </div>
                 <div className="text-sm text-roda-gray-600">Total Cuotas</div>
               </div>
               
               <div className="text-center">
                 <div className="text-2xl font-bold text-roda-success">
-                  {summary?.cuotas_pagadas || 0}
+                  {summary?.paid_schedules || 0}
                 </div>
                 <div className="text-sm text-roda-gray-600">Pagadas</div>
               </div>
               
               <div className="text-center">
                 <div className="text-2xl font-bold text-roda-warning">
-                  {summary?.cuotas_pendientes || 0}
+                  {summary?.pending_schedules || 0}
                 </div>
                 <div className="text-sm text-roda-gray-600">Pendientes</div>
               </div>
               
               <div className="text-center">
                 <div className="text-2xl font-bold text-roda-error">
-                  {summary?.cuotas_vencidas || 0}
+                  {summary?.overdue_schedules || 0}
                 </div>
                 <div className="text-sm text-roda-gray-600">Vencidas</div>
               </div>
-        </div>
+            </div>
           </CardContent>
         </Card>
       )}

@@ -1,5 +1,7 @@
 // API service for client operations
 
+import { API_ENDPOINTS, buildApiUrl } from "@/config/api";
+
 export interface Client {
   cliente_id: number;
   tipo_doc: string;
@@ -23,22 +25,18 @@ export interface PaymentSchedule {
   estado: 'pendiente' | 'pagada' | 'vencida' | 'parcial';
   producto: string;
   credito_id: number;
-  dias_vencido: number;
-  dias_restantes: number;
-  monto_pagado: number;
-  saldo_pendiente: number;
 }
 
 export interface PaymentSummary {
-  total_cuotas: number;
-  cuotas_pagadas: number;
-  cuotas_vencidas: number;
-  cuotas_pendientes: number;
-  cuotas_parciales: number;
-  total_monto: number;
-  monto_pagado: number;
-  monto_pendiente: number;
-  porcentaje_pagado: number;
+  total_schedules: number;
+  paid_schedules: number;
+  overdue_schedules: number;
+  pending_schedules: number;
+  partial_schedules: number;
+  total_amount: number;
+  paid_amount: number;
+  pending_amount: number;
+  payment_percentage: number;
 }
 
 export interface PaymentStatus {
@@ -52,11 +50,10 @@ export interface PaymentStatus {
   dias_mora: number;
 }
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8000/api';
 
 class ClientService {
   private async request<T>(endpoint: string, options?: RequestInit): Promise<T> {
-    const url = `${API_BASE_URL}${endpoint}`;
+    const url = buildApiUrl(endpoint);
     
     try {
       const response = await fetch(url, {
@@ -84,7 +81,7 @@ class ClientService {
     tipoDoc: string = 'CC'
   ): Promise<Client> {
     return this.request<Client>(
-      `/clientes/buscar_cliente/?num_doc=${numDoc}&tipo_doc=${tipoDoc}`
+      `${API_ENDPOINTS.CLIENTES}/buscar_cliente/?num_doc=${numDoc}&tipo_doc=${tipoDoc}`
     );
   }
 
@@ -93,7 +90,7 @@ class ClientService {
     tipoDoc: string = 'CC'
   ): Promise<ClientSearchResponse> {
     return this.request<ClientSearchResponse>(
-      `/clientes/buscar_por_cedula/?num_doc=${numDoc}&tipo_doc=${tipoDoc}`
+      `${API_ENDPOINTS.CLIENTES}/buscar_por_cedula/?num_doc=${numDoc}&tipo_doc=${tipoDoc}`
     );
   }
 
@@ -118,11 +115,11 @@ class ClientService {
     count: number;
     results: Client[];
   }> {
-    return this.request('/clientes/');
+    return this.request(`${API_ENDPOINTS.CLIENTES}/`);
   }
 
   async getClientsWithOverdue(): Promise<Client[]> {
-    return this.request<Client[]>('/clientes/con_mora/');
+    return this.request<Client[]>(`${API_ENDPOINTS.CLIENTES}/con_mora/`);
   }
 }
 

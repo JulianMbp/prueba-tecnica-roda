@@ -38,7 +38,7 @@ export function Badge({
 }
 
 interface StatusBadgeProps {
-  status: 'pendiente' | 'pagada' | 'vencida' | 'parcial' | 'al_dia' | 'en_mora';
+  status: string;
   className?: string;
 }
 
@@ -46,13 +46,16 @@ export function StatusBadge({ status, className = '' }: StatusBadgeProps) {
   const statusConfig = {
     pendiente: { variant: 'neutral' as const, text: 'Pendiente' },
     pagada: { variant: 'success' as const, text: 'Pagada' },
+    pagado: { variant: 'success' as const, text: 'Pagado' },
     vencida: { variant: 'error' as const, text: 'Vencida' },
+    vencido: { variant: 'error' as const, text: 'Vencido' },
     parcial: { variant: 'warning' as const, text: 'Parcial' },
     al_dia: { variant: 'success' as const, text: 'Al día' },
     en_mora: { variant: 'error' as const, text: 'En mora' },
+    mora: { variant: 'error' as const, text: 'En mora' },
   };
 
-  const config = statusConfig[status];
+  const config = statusConfig[status as keyof typeof statusConfig] || { variant: 'neutral' as const, text: status || 'Desconocido' };
 
   return (
     <Badge variant={config.variant} className={className}>

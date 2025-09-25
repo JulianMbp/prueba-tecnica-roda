@@ -2,23 +2,8 @@ import type { NextRequest } from 'next/server';
 import { NextResponse } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  const pathname = request.nextUrl.pathname;
-  
-  // Rutas que requieren autenticación
-  const protectedRoutes = ['/schedule', '/credits', '/payments'];
-  
-  // Si está en la ruta raíz, permitir acceso (se maneja en el componente)
-  if (pathname === '/') {
-    return NextResponse.next();
-  }
-  
-  // Si es una ruta protegida, verificar si hay información de cliente en localStorage
-  // Nota: En middleware no podemos acceder a localStorage directamente
-  // La lógica de autenticación se maneja en los componentes
-  if (protectedRoutes.includes(pathname)) {
-    return NextResponse.next();
-  }
-  
+  // Por ahora, permitir todas las rutas
+  // La lógica de autenticación se maneja completamente en los componentes
   return NextResponse.next();
 }
 

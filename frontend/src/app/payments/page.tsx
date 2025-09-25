@@ -137,60 +137,62 @@ export default function PaymentsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       {/* Header */}
-      <div className="text-center py-6">
-        <h1 className="text-4xl font-bold text-roda-black mb-4">
+      <div className="text-center py-4 sm:py-6">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-roda-black mb-4">
           Historial de Pagos
         </h1>
-        <p className="text-xl text-roda-gray-600 max-w-2xl mx-auto">
+        <p className="text-base sm:text-lg lg:text-xl text-roda-gray-600 max-w-2xl mx-auto px-4">
           Consulta el historial completo de tus pagos realizados
         </p>
       </div>
 
       {/* Resumen */}
       {summary && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-roda-success">
-                  {formatCurrency(summary.monto_total_pagado)}
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-roda-success">
+                  <span className="hidden sm:inline">{formatCurrency(summary.monto_total_pagado)}</span>
+                  <span className="sm:hidden text-sm">{formatCurrency(summary.monto_total_pagado)}</span>
                 </div>
-                <div className="text-sm text-roda-gray-600">Total Pagado</div>
+                <div className="text-xs sm:text-sm text-roda-gray-600">Total Pagado</div>
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-roda-black">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-roda-black">
                   {summary.total_pagos}
                 </div>
-                <div className="text-sm text-roda-gray-600">Total Pagos</div>
+                <div className="text-xs sm:text-sm text-roda-gray-600">Total Pagos</div>
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-roda-info">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-roda-info">
                   {Object.keys(summary.pagos_por_medio).length}
                 </div>
-                <div className="text-sm text-roda-gray-600">Métodos de Pago</div>
+                <div className="text-xs sm:text-sm text-roda-gray-600">Métodos de Pago</div>
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-roda-black">
-                  {formatCurrency(summary.monto_total_pagado / summary.total_pagos)}
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-roda-black">
+                  <span className="hidden sm:inline">{formatCurrency(summary.monto_total_pagado / summary.total_pagos)}</span>
+                  <span className="sm:hidden text-sm">{formatCurrency(summary.monto_total_pagado / summary.total_pagos)}</span>
                 </div>
-                <div className="text-sm text-roda-gray-600">Promedio por Pago</div>
+                <div className="text-xs sm:text-sm text-roda-gray-600">Promedio por Pago</div>
               </div>
             </CardContent>
           </Card>
@@ -204,19 +206,20 @@ export default function PaymentsPage() {
             <CardTitle className="text-lg">Último Pago Realizado</CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="flex items-center space-x-4">
-              <div className="w-12 h-12 bg-roda-success/10 rounded-full flex items-center justify-center">
-                <svg className="w-6 h-6 text-roda-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <div className="flex items-center space-x-3 sm:space-x-4">
+              <div className="w-10 h-10 sm:w-12 sm:h-12 bg-roda-success/10 rounded-full flex items-center justify-center flex-shrink-0">
+                <svg className="w-5 h-5 sm:w-6 sm:h-6 text-roda-success" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
               </div>
-              <div>
-                <p className="text-sm text-roda-gray-600">Fecha del último pago</p>
-                <p className="text-lg font-semibold text-roda-black">
+              <div className="min-w-0 flex-1">
+                <p className="text-xs sm:text-sm text-roda-gray-600">Fecha del último pago</p>
+                <p className="text-base sm:text-lg font-semibold text-roda-black truncate">
                   {formatDate(summary.ultimo_pago.fecha)}
                 </p>
-                <p className="text-sm text-roda-gray-600">
-                  {formatCurrency(summary.ultimo_pago.monto)} - {summary.ultimo_pago.medio}
+                <p className="text-xs sm:text-sm text-roda-gray-600 truncate">
+                  <span className="hidden sm:inline">{formatCurrency(summary.ultimo_pago.monto)} - {summary.ultimo_pago.medio}</span>
+                  <span className="sm:hidden">{formatCurrency(summary.ultimo_pago.monto)}</span>
                 </p>
               </div>
             </div>
@@ -261,24 +264,26 @@ export default function PaymentsPage() {
             </CardTitle>
           </CardHeader>
           <CardContent>
-            <div className="space-y-4">
+            <div className="space-y-3 sm:space-y-4">
               {payments.map((payment) => (
                 <div
                   key={payment.pago_id}
-                  className="flex items-center justify-between p-4 bg-roda-gray-50 rounded-lg hover:bg-roda-gray-100 transition-colors"
+                  className="flex items-center justify-between p-3 sm:p-4 bg-roda-gray-50 rounded-lg hover:bg-roda-gray-100 transition-colors"
                 >
-                  <div className="flex items-center space-x-4">
-                    <div className="w-10 h-10 bg-roda-success/10 rounded-full flex items-center justify-center">
-                      {getPaymentMethodIcon(payment.medio)}
+                  <div className="flex items-center space-x-3 sm:space-x-4 min-w-0 flex-1">
+                    <div className="w-8 h-8 sm:w-10 sm:h-10 bg-roda-success/10 rounded-full flex items-center justify-center flex-shrink-0">
+                      <div className="scale-75 sm:scale-100">
+                        {getPaymentMethodIcon(payment.medio)}
+                      </div>
                     </div>
-                    <div>
-                      <div className="flex items-center space-x-2">
-                        <h4 className="font-semibold text-roda-black">
+                    <div className="min-w-0 flex-1">
+                      <div className="flex items-center space-x-2 mb-1">
+                        <h4 className="font-semibold text-roda-black text-sm sm:text-base truncate">
                           Pago #{payment.pago_id}
                         </h4>
                         <StatusBadge status="pagada" />
                       </div>
-                      <div className="text-sm text-roda-gray-600">
+                      <div className="text-xs sm:text-sm text-roda-gray-600 truncate">
                         {payment.cuota_info && (
                           <span>Cuota {payment.cuota_info.num_cuota} - {payment.cuota_info.producto}</span>
                         )}
@@ -288,11 +293,12 @@ export default function PaymentsPage() {
                       </div>
                     </div>
                   </div>
-                  <div className="text-right">
-                    <div className="text-lg font-bold text-roda-success">
-                      {formatCurrency(parseFloat(payment.monto))}
+                  <div className="text-right flex-shrink-0 ml-2">
+                    <div className="text-base sm:text-lg font-bold text-roda-success">
+                      <span className="hidden sm:inline">{formatCurrency(parseFloat(payment.monto))}</span>
+                      <span className="sm:hidden text-sm">{formatCurrency(parseFloat(payment.monto))}</span>
                     </div>
-                    <div className="text-sm text-roda-gray-600 capitalize">
+                    <div className="text-xs sm:text-sm text-roda-gray-600 capitalize">
                       {payment.medio}
                     </div>
                   </div>

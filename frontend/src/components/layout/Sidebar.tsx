@@ -61,16 +61,16 @@ export function Sidebar() {
 
   return (
     <div className={`bg-roda-white border-r border-roda-gray-200 transition-all duration-300 ${
-      isCollapsed ? 'w-16' : 'w-64'
-    } flex-shrink-0`}>
-      {/* Toggle button */}
-      <div className="p-4 border-b border-roda-gray-200">
+      isCollapsed ? 'w-12 lg:w-16' : 'w-48 lg:w-64'
+    } flex-shrink-0 flex-col hidden md:flex`}>
+      {/* Toggle button - Solo en desktop */}
+      <div className="p-2 lg:p-4 border-b border-roda-gray-200">
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
           className="flex items-center justify-center w-full p-2 text-roda-gray-600 hover:text-roda-black hover:bg-roda-gray-50 rounded-md transition-colors"
         >
           <svg
-            className={`w-5 h-5 transition-transform ${isCollapsed ? 'rotate-180' : ''}`}
+            className={`w-4 h-4 lg:w-5 lg:h-5 transition-transform ${isCollapsed ? 'rotate-180' : ''}`}
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -78,13 +78,13 @@ export function Sidebar() {
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
           {!isCollapsed && (
-            <span className="ml-2 text-sm font-medium">Colapsar</span>
+            <span className="ml-2 text-xs lg:text-sm font-medium hidden lg:block">Colapsar</span>
           )}
         </button>
       </div>
 
       {/* Navigation */}
-      <nav className="mt-4 px-2">
+      <nav className="mt-2 lg:mt-4 px-1 lg:px-2 flex-1">
         <ul className="space-y-1">
           {navigation.map((item) => (
             <li key={item.name}>
@@ -94,41 +94,21 @@ export function Sidebar() {
                   item.current
                     ? 'bg-roda-yellow text-roda-black'
                     : 'text-roda-gray-700 hover:text-roda-black hover:bg-roda-gray-50'
-                } group flex items-center px-2 py-2 text-sm font-medium rounded-md transition-colors`}
+                } group flex items-center px-1 lg:px-2 py-2 text-xs lg:text-sm font-medium rounded-md transition-colors`}
               >
                 <span className={`flex-shrink-0 ${item.current ? 'text-roda-black' : 'text-roda-gray-500'}`}>
-                  {item.icon}
+                  <div className="w-4 h-4 lg:w-5 lg:h-5">
+                    {item.icon}
+                  </div>
                 </span>
                 {!isCollapsed && (
-                  <span className="ml-3">{item.name}</span>
+                  <span className="ml-1 lg:ml-3 truncate">{item.name}</span>
                 )}
               </Link>
             </li>
           ))}
         </ul>
       </nav>
-
-      {/* Mobile responsive */}
-      <div className="md:hidden">
-        <div className="px-2 pt-2 pb-3 space-y-1">
-          {navigation.map((item) => (
-            <Link
-              key={item.name}
-              href={item.href}
-              className={`${
-                item.current
-                  ? 'bg-roda-yellow text-roda-black'
-                  : 'text-roda-gray-700 hover:text-roda-black hover:bg-roda-gray-50'
-              } group flex items-center px-2 py-2 text-base font-medium rounded-md`}
-            >
-              <span className={`mr-3 flex-shrink-0 h-6 w-6 ${item.current ? 'text-roda-black' : 'text-roda-gray-500'}`}>
-                {item.icon}
-              </span>
-              {item.name}
-            </Link>
-          ))}
-        </div>
-      </div>
     </div>
   );
 }

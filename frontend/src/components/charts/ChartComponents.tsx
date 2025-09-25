@@ -2,21 +2,21 @@
 
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import {
-    Area,
-    AreaChart,
-    Bar,
-    BarChart,
-    CartesianGrid,
-    Cell,
-    Legend,
-    Line,
-    LineChart,
-    Pie,
-    PieChart,
-    ResponsiveContainer,
-    Tooltip,
-    XAxis,
-    YAxis
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Cell,
+  Legend,
+  Line,
+  LineChart,
+  Pie,
+  PieChart,
+  ResponsiveContainer,
+  Tooltip,
+  XAxis,
+  YAxis
 } from 'recharts';
 
 // Colores de la paleta Roda
@@ -387,22 +387,22 @@ export function MetricCard({
 
   return (
     <Card className={`border-l-4 ${colorClasses[color]}`}>
-      <CardContent className="p-6">
-        <div className="flex items-center justify-between">
-          <div className="flex-1">
-            <p className="text-sm font-medium text-roda-gray-600 uppercase tracking-wide">
+      <CardContent className="p-3 sm:p-4 lg:p-6">
+        <div className="flex items-start justify-between">
+          <div className="flex-1 min-w-0">
+            <p className="text-xs sm:text-sm font-medium text-roda-gray-600 uppercase tracking-wide truncate">
               {title}
             </p>
-            <p className="text-3xl font-bold text-roda-gray-900 mt-2">
+            <p className="text-xl sm:text-2xl lg:text-3xl font-bold text-roda-gray-900 mt-1 sm:mt-2">
               {value}
             </p>
             {subtitle && (
-              <p className="text-sm text-roda-gray-500 mt-1">{subtitle}</p>
+              <p className="text-xs sm:text-sm text-roda-gray-500 mt-1 truncate">{subtitle}</p>
             )}
             {trend && (
-              <div className="flex items-center mt-2">
+              <div className="flex items-center mt-1 sm:mt-2">
                 <svg 
-                  className={`w-4 h-4 mr-1 ${trend.isPositive ? 'text-green-500' : 'text-red-500'}`}
+                  className={`w-3 h-3 sm:w-4 sm:h-4 mr-1 ${trend.isPositive ? 'text-green-500' : 'text-red-500'}`}
                   fill="none" 
                   stroke="currentColor" 
                   viewBox="0 0 24 24"
@@ -414,15 +414,17 @@ export function MetricCard({
                     d={trend.isPositive ? "M13 7h8m0 0v8m0-8l-8 8-4-4-6 6" : "M13 17h8m0 0V9m0 8l-8-8-4 4-6-6"} 
                   />
                 </svg>
-                <span className={`text-sm font-medium ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
+                <span className={`text-xs sm:text-sm font-medium ${trend.isPositive ? 'text-green-600' : 'text-red-600'}`}>
                   {trend.value}%
                 </span>
               </div>
             )}
           </div>
           {icon && (
-            <div className={`text-3xl ${iconColors[color]}`}>
-              {icon}
+            <div className={`text-lg sm:text-xl lg:text-3xl ${iconColors[color]} flex-shrink-0 ml-2`}>
+              <div className="scale-75 sm:scale-90 lg:scale-100">
+                {icon}
+              </div>
             </div>
           )}
         </div>

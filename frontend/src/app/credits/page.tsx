@@ -123,60 +123,60 @@ export default function CreditsPage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       {/* Header */}
-      <div className="text-center py-6">
-        <h1 className="text-4xl font-bold text-roda-black mb-4">
+      <div className="text-center py-4 sm:py-6">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-roda-black mb-4">
           Mis Créditos
         </h1>
-        <p className="text-xl text-roda-gray-600 max-w-2xl mx-auto">
+        <p className="text-base sm:text-lg lg:text-xl text-roda-gray-600 max-w-2xl mx-auto px-4">
           Consulta el estado y detalles de todos tus créditos
         </p>
       </div>
 
       {/* Resumen */}
       {summary && (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-roda-black">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-roda-black">
                   {summary.total_creditos}
                 </div>
-                <div className="text-sm text-roda-gray-600">Total Créditos</div>
+                <div className="text-xs sm:text-sm text-roda-gray-600">Total Créditos</div>
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-roda-success">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-roda-success">
                   {summary.creditos_vigentes}
                 </div>
-                <div className="text-sm text-roda-gray-600">Vigentes</div>
+                <div className="text-xs sm:text-sm text-roda-gray-600">Vigentes</div>
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-roda-success">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-roda-success">
                   {summary.creditos_cancelados}
                 </div>
-                <div className="text-sm text-roda-gray-600">Cancelados</div>
+                <div className="text-xs sm:text-sm text-roda-gray-600">Cancelados</div>
               </div>
             </CardContent>
           </Card>
           
           <Card>
-            <CardContent className="pt-6">
+            <CardContent className="pt-4 sm:pt-6">
               <div className="text-center">
-                <div className="text-2xl font-bold text-roda-error">
+                <div className="text-lg sm:text-xl lg:text-2xl font-bold text-roda-error">
                   {summary.creditos_castigados}
                 </div>
-                <div className="text-sm text-roda-gray-600">Castigados</div>
+                <div className="text-xs sm:text-sm text-roda-gray-600">Castigados</div>
               </div>
             </CardContent>
           </Card>
@@ -185,7 +185,7 @@ export default function CreditsPage() {
 
       {/* Resumen financiero */}
       {summary && (
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           <Card>
             <CardHeader>
               <CardTitle className="text-lg">Inversión Total</CardTitle>
@@ -254,48 +254,52 @@ export default function CreditsPage() {
 
       {/* Lista de Créditos */}
       {!isLoading && !error && credits.length > 0 && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {credits.map((credit) => (
             <Card key={credit.credito_id} className="hover:shadow-lg transition-shadow">
               <CardHeader>
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center space-x-3">
-                    <div className="w-12 h-12 bg-roda-yellow/10 rounded-full flex items-center justify-center">
-                      {getProductIcon(credit.producto)}
+                  <div className="flex items-center space-x-2 sm:space-x-3 min-w-0 flex-1">
+                    <div className="w-10 h-10 sm:w-12 sm:h-12 bg-roda-yellow/10 rounded-full flex items-center justify-center flex-shrink-0">
+                      <div className="scale-75 sm:scale-100">
+                        {getProductIcon(credit.producto)}
+                      </div>
                     </div>
-                    <div>
-                      <CardTitle className="text-lg">{credit.producto}</CardTitle>
-                      <p className="text-sm text-roda-gray-600">
+                    <div className="min-w-0 flex-1">
+                      <CardTitle className="text-base sm:text-lg truncate">{credit.producto}</CardTitle>
+                      <p className="text-xs sm:text-sm text-roda-gray-600">
                         Crédito #{credit.credito_id}
                       </p>
                     </div>
                   </div>
-                  <StatusBadge status={credit.estado} />
+                  <div className="flex-shrink-0 ml-2">
+                    <StatusBadge status={credit.estado} />
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>
                 <div className="space-y-4">
                   {/* Información básica */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     <div>
-                      <p className="text-sm text-roda-gray-600">Inversión</p>
-                      <p className="font-semibold text-lg">{formatCurrency(parseFloat(credit.inversion))}</p>
+                      <p className="text-xs sm:text-sm text-roda-gray-600">Inversión</p>
+                      <p className="font-semibold text-sm sm:text-base lg:text-lg truncate">{formatCurrency(parseFloat(credit.inversion))}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-roda-gray-600">TEA</p>
-                      <p className="font-semibold">{formatPercentage(parseFloat(credit.tea) * 100)}</p>
+                      <p className="text-xs sm:text-sm text-roda-gray-600">TEA</p>
+                      <p className="font-semibold text-sm sm:text-base">{formatPercentage(parseFloat(credit.tea) * 100)}</p>
                     </div>
                   </div>
 
                   {/* Cuotas */}
-                  <div className="grid grid-cols-2 gap-4">
+                  <div className="grid grid-cols-2 gap-3 sm:gap-4">
                     <div>
-                      <p className="text-sm text-roda-gray-600">Cuotas Totales</p>
-                      <p className="font-semibold">{credit.cuotas_totales}</p>
+                      <p className="text-xs sm:text-sm text-roda-gray-600">Cuotas Totales</p>
+                      <p className="font-semibold text-sm sm:text-base">{credit.cuotas_totales}</p>
                     </div>
                     <div>
-                      <p className="text-sm text-roda-gray-600">Cuotas Pagadas</p>
-                      <p className="font-semibold text-roda-success">
+                      <p className="text-xs sm:text-sm text-roda-gray-600">Cuotas Pagadas</p>
+                      <p className="font-semibold text-roda-success text-sm sm:text-base">
                         {credit.resumen?.cuotas_pagadas || 0}
                       </p>
                     </div>
@@ -303,22 +307,22 @@ export default function CreditsPage() {
 
                   {/* Fechas importantes */}
                   <div className="space-y-2">
-                    <div className="flex justify-between">
-                      <span className="text-sm text-roda-gray-600">Desembolso:</span>
-                      <span className="text-sm font-medium">{formatDate(credit.fecha_desembolso)}</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs sm:text-sm text-roda-gray-600">Desembolso:</span>
+                      <span className="text-xs sm:text-sm font-medium text-right">{formatDate(credit.fecha_desembolso)}</span>
                     </div>
-                    <div className="flex justify-between">
-                      <span className="text-sm text-roda-gray-600">Inicio Pago:</span>
-                      <span className="text-sm font-medium">{formatDate(credit.fecha_inicio_pago)}</span>
+                    <div className="flex justify-between items-center">
+                      <span className="text-xs sm:text-sm text-roda-gray-600">Inicio Pago:</span>
+                      <span className="text-xs sm:text-sm font-medium text-right">{formatDate(credit.fecha_inicio_pago)}</span>
                     </div>
                   </div>
 
                   {/* Progreso del pago */}
                   {credit.resumen && (
                     <div className="space-y-2">
-                      <div className="flex justify-between text-sm">
-                        <span className="text-roda-gray-600">Progreso del Pago</span>
-                        <span className="font-medium">{credit.resumen.porcentaje_pagado.toFixed(1)}%</span>
+                      <div className="flex justify-between items-center">
+                        <span className="text-xs sm:text-sm text-roda-gray-600">Progreso del Pago</span>
+                        <span className="text-xs sm:text-sm font-medium">{credit.resumen.porcentaje_pagado.toFixed(1)}%</span>
                       </div>
                       <div className="w-full bg-roda-gray-200 rounded-full h-2">
                         <div
@@ -332,16 +336,16 @@ export default function CreditsPage() {
                           style={{ width: `${Math.min(credit.resumen.porcentaje_pagado, 100)}%` }}
                         />
                       </div>
-                      <div className="grid grid-cols-2 gap-4 text-xs">
-                        <div>
+                      <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-4 text-xs">
+                        <div className="flex flex-col sm:flex-row sm:items-center">
                           <span className="text-roda-gray-600">Pagado:</span>
-                          <span className="ml-1 font-medium text-roda-success">
+                          <span className="sm:ml-1 font-medium text-roda-success truncate">
                             {formatCurrency(credit.resumen.monto_pagado)}
                           </span>
                         </div>
-                        <div>
+                        <div className="flex flex-col sm:flex-row sm:items-center">
                           <span className="text-roda-gray-600">Pendiente:</span>
-                          <span className="ml-1 font-medium text-roda-warning">
+                          <span className="sm:ml-1 font-medium text-roda-warning truncate">
                             {formatCurrency(credit.resumen.monto_pendiente)}
                           </span>
                         </div>

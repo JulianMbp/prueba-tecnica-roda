@@ -215,19 +215,19 @@ export default function SchedulePage() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       {/* Header */}
-      <div className="text-center py-6">
-        <h1 className="text-4xl font-bold text-roda-black mb-4">
+      <div className="text-center py-4 sm:py-6">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-roda-black mb-4">
           Cronograma de Pagos
         </h1>
-        <p className="text-xl text-roda-gray-600 max-w-2xl mx-auto">
+        <p className="text-base sm:text-lg lg:text-xl text-roda-gray-600 max-w-2xl mx-auto px-4">
           Consulta el detalle completo de tu cronograma de pagos
         </p>
       </div>
 
       {/* Métricas principales - Dinámicas basadas en filtros */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
         <MetricCard
           title="Total Cuotas"
           value={dynamicSummary.total_cuotas}
@@ -321,33 +321,36 @@ export default function SchedulePage() {
       </FilterPanel>
 
       {/* Controles de Vista */}
-      <div className="flex flex-wrap items-center justify-between gap-4">
-        <div className="flex items-center space-x-4">
+      <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center gap-3 sm:gap-4 w-full sm:w-auto">
           <button
             onClick={() => setShowCharts(!showCharts)}
-            className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-roda-gray-700 bg-white border border-roda-gray-300 rounded-md hover:bg-roda-gray-50 focus:outline-none focus:ring-2 focus:ring-roda-yellow"
+            className="flex items-center space-x-2 px-3 sm:px-4 py-2 text-sm font-medium text-roda-gray-700 bg-white border border-roda-gray-300 rounded-md hover:bg-roda-gray-50 focus:outline-none focus:ring-2 focus:ring-roda-yellow"
           >
             <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" />
             </svg>
-            <span>{showCharts ? 'Ocultar' : 'Mostrar'} Gráficos</span>
+            <span className="hidden sm:inline">{showCharts ? 'Ocultar' : 'Mostrar'} Gráficos</span>
+            <span className="sm:hidden">{showCharts ? 'Ocultar' : 'Mostrar'}</span>
           </button>
           
-          <div className="text-sm text-roda-gray-600">
+          <div className="text-xs sm:text-sm text-roda-gray-600">
             Mostrando {filteredSchedule.length} de {schedule.length} cuotas
           </div>
         </div>
         
-        <ExportButton 
-          data={prepareScheduleData(filteredSchedule as unknown as Array<Record<string, unknown>>)}
-          disabled={filteredSchedule.length === 0}
-        />
+        <div className="w-full sm:w-auto">
+          <ExportButton 
+            data={prepareScheduleData(filteredSchedule as unknown as Array<Record<string, unknown>>)}
+            disabled={filteredSchedule.length === 0}
+          />
+        </div>
       </div>
 
 
       {/* Gráficos */}
       {showCharts && (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           <DynamicPaymentStatusChart data={chartData.statusData} />
           <DynamicPaymentTimelineChart data={chartData.timelineData} />
         </div>

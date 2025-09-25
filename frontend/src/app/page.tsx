@@ -74,7 +74,7 @@ export default function Home() {
   // Si está cargando, mostrar loading
   if (isLoading) {
     return (
-      <div className="max-w-7xl mx-auto space-y-6">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
         <div className="text-center py-8">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-roda-yellow mx-auto mb-4"></div>
           <p className="text-roda-gray-600">Cargando tu cronograma...</p>
@@ -84,13 +84,13 @@ export default function Home() {
   }
 
   return (
-    <div className="max-w-7xl mx-auto space-y-6">
+    <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 space-y-6">
       {/* Hero Section */}
-      <div className="text-center py-8">
-        <h1 className="text-4xl font-bold text-roda-black mb-4">
+      <div className="text-center py-6 sm:py-8">
+        <h1 className="text-2xl sm:text-3xl lg:text-4xl font-bold text-roda-black mb-4">
           Bienvenido, {clientInfo?.nombre}
         </h1>
-        <p className="text-xl text-roda-gray-600 max-w-2xl mx-auto">
+        <p className="text-base sm:text-lg lg:text-xl text-roda-gray-600 max-w-2xl mx-auto px-4">
           Consulta el estado de tus pagos y mantente al día con tu cronograma de e-bikes y e-mopeds
         </p>
       </div>
@@ -103,7 +103,7 @@ export default function Home() {
               <svg className="w-6 h-6 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
-              <p className="font-medium">{error}</p>
+              <p className="font-medium text-sm sm:text-base">{error}</p>
             </div>
             <div className="mt-4">
               <button
@@ -137,7 +137,38 @@ export default function Home() {
           </CardHeader>
           
           <CardContent>
-            <div className="overflow-x-auto">
+            {/* Vista móvil - Cards apiladas */}
+            <div className="block lg:hidden space-y-4">
+              {paymentSchedule.map((payment) => (
+                <div key={payment.cuota_id} className="border border-roda-gray-200 rounded-lg p-4 bg-white hover:bg-roda-gray-50 transition-colors">
+                  <div className="flex justify-between items-start mb-3">
+                    <div>
+                      <div className="flex items-center space-x-2">
+                        <span className="font-semibold text-roda-gray-900">Cuota #{payment.num_cuota}</span>
+                        <StatusBadge status={payment.estado} />
+                      </div>
+                      <div className="text-sm text-roda-gray-600 mt-1">
+                        {payment.producto === 'e-bike' ? '🛵 E-bike' : '🏍️ E-moped'}
+                      </div>
+                    </div>
+                    <div className="text-right">
+                      <div className="font-semibold text-roda-gray-900">
+                        {formatCurrency(payment.valor_cuota)}
+                      </div>
+                      <div className="text-sm text-roda-gray-600">
+                        Crédito #{payment.credito_id}
+                      </div>
+                    </div>
+                  </div>
+                  <div className="text-sm text-roda-gray-600">
+                    Vence: {formatDate(payment.fecha_vencimiento)}
+                  </div>
+                </div>
+              ))}
+            </div>
+
+            {/* Vista desktop - Tabla */}
+            <div className="hidden lg:block overflow-x-auto">
               <div className="min-w-full divide-y divide-roda-gray-200">
                 {/* Table Header */}
                 <div className="grid grid-cols-10 gap-4 px-4 py-3 bg-roda-gray-50 text-xs font-medium text-roda-gray-500 uppercase tracking-wider">
@@ -184,33 +215,33 @@ export default function Home() {
             </div>
 
             {/* Summary Stats */}
-            <div className="mt-6 grid grid-cols-1 md:grid-cols-4 gap-4 pt-6 border-t border-roda-gray-200">
+            <div className="mt-6 grid grid-cols-2 sm:grid-cols-4 gap-4 pt-6 border-t border-roda-gray-200">
               <div className="text-center">
-                <div className="text-2xl font-bold text-roda-black">
+                <div className="text-xl sm:text-2xl font-bold text-roda-black">
                   {summary?.total_schedules || 0}
                 </div>
-                <div className="text-sm text-roda-gray-600">Total Cuotas</div>
+                <div className="text-xs sm:text-sm text-roda-gray-600">Total Cuotas</div>
               </div>
               
               <div className="text-center">
-                <div className="text-2xl font-bold text-roda-success">
+                <div className="text-xl sm:text-2xl font-bold text-roda-success">
                   {summary?.paid_schedules || 0}
                 </div>
-                <div className="text-sm text-roda-gray-600">Pagadas</div>
+                <div className="text-xs sm:text-sm text-roda-gray-600">Pagadas</div>
               </div>
               
               <div className="text-center">
-                <div className="text-2xl font-bold text-roda-warning">
+                <div className="text-xl sm:text-2xl font-bold text-roda-warning">
                   {summary?.pending_schedules || 0}
                 </div>
-                <div className="text-sm text-roda-gray-600">Pendientes</div>
+                <div className="text-xs sm:text-sm text-roda-gray-600">Pendientes</div>
               </div>
               
               <div className="text-center">
-                <div className="text-2xl font-bold text-roda-error">
+                <div className="text-xl sm:text-2xl font-bold text-roda-error">
                   {summary?.overdue_schedules || 0}
                 </div>
-                <div className="text-sm text-roda-gray-600">Vencidas</div>
+                <div className="text-xs sm:text-sm text-roda-gray-600">Vencidas</div>
               </div>
             </div>
           </CardContent>

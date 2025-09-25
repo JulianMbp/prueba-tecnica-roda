@@ -18,9 +18,9 @@ export interface ClientSearchResponse {
 }
 
 export interface PaymentSchedule {
-  schedule_id: Key | null | undefined;
-  credit_info: any;
-  credito: any;
+  schedule_id: number | null | undefined;
+  credit_info: unknown;
+  credito: unknown;
   cuota_id: number;
   num_cuota: number;
   fecha_vencimiento: string;
@@ -31,10 +31,6 @@ export interface PaymentSchedule {
 }
 
 export interface PaymentSummary {
-  monto_total_pagado(monto_total_pagado: any): import("react").ReactNode;
-  total_pagos: ReactNode;
-  pagos_por_medio(pagos_por_medio: any): unknown;
-  ultimo_pago: PaymentSummary | null;
   total_schedules: number;
   paid_schedules: number;
   overdue_schedules: number;

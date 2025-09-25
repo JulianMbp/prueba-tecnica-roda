@@ -52,7 +52,6 @@ export function ClientInfo({ client, summary, estadoActual }: ClientInfoProps) {
           <div className="space-y-2">
             <h4 className="font-medium text-roda-gray-900">Información del Cliente</h4>
             <div className="text-sm text-roda-gray-600 space-y-1">
-              <p><strong>ID:</strong> {client.cliente_id}</p>
               <p><strong>Registro:</strong> {formatDate(client.created_at)}</p>
             </div>
           </div>

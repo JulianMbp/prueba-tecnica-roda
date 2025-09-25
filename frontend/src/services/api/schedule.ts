@@ -46,6 +46,7 @@ export interface ScheduleFilters {
   orden?: 'asc' | 'desc';
   page?: number;
   page_size?: number;
+  all?: boolean;
 }
 
 export interface RepartidorCronograma {
@@ -81,9 +82,12 @@ class ScheduleService {
 
   // Obtener cronograma del cliente
   async getClientSchedule(clientId: number, filters?: ScheduleFilters): Promise<{
-    count: number;
-    next: string | null;
-    previous: string | null;
+    count?: number;
+    next?: string | null;
+    previous?: string | null;
+    total_pages?: number;
+    current_page?: number;
+    page_size?: number;
     results: PaymentSchedule[];
   }> {
     const params = new URLSearchParams();
@@ -99,14 +103,24 @@ class ScheduleService {
     if (filters?.orden) params.append('orden', filters.orden);
     if (filters?.page) params.append('page', filters.page.toString());
     if (filters?.page_size) params.append('page_size', filters.page_size.toString());
+    if (filters?.all) params.append('all', 'true');
 
     const queryString = params.toString();
     const endpoint = `${API_ENDPOINTS.CRONOGRAMA}/?${queryString}`;
+    
+    // Si se solicitan todos los resultados, el backend retorna directamente el array
+    if (filters?.all) {
+      const results = await this.request<PaymentSchedule[]>(endpoint);
+      return { results };
+    }
     
     return this.request<{
       count: number;
       next: string | null;
       previous: string | null;
+      total_pages: number;
+      current_page: number;
+      page_size: number;
       results: PaymentSchedule[];
     }>(endpoint);
   }

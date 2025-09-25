@@ -6,6 +6,7 @@ import { DateRangeFilter, FilterPanel, SearchFilter, SelectFilter } from '@/comp
 import { StatusBadge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { PaginationControls } from '@/components/ui/Pagination';
 import { useAuth } from '@/contexts/AuthContext';
 import { SchedulePaymentSchedule, scheduleService } from '@/services/api';
 import { prepareScheduleData } from '@/utils/exportUtils';
@@ -26,8 +27,8 @@ export default function SchedulePage() {
   const [currentPage, setCurrentPage] = useState(1);
   const [totalPages, setTotalPages] = useState(1);
   const [totalItems, setTotalItems] = useState(0);
-  
-  const itemsPerPage = 10;
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [showAll, setShowAll] = useState(false);
 
   // Estados para filtros
   const [filters, setFilters] = useState({
@@ -47,28 +48,35 @@ export default function SchedulePage() {
     setError(null);
 
     try {
-      // Obtener cronograma paginado para la tabla
+      // Obtener cronograma con paginación o todos si showAll está activado
       const response = await scheduleService.getClientSchedule(clientInfo.cliente_id, {
-        page: currentPage,
-        page_size: itemsPerPage,
+        page: showAll ? undefined : currentPage,
+        page_size: showAll ? undefined : itemsPerPage,
+        all: showAll,
       });
       
       // Obtener TODOS los datos para las gráficas (sin paginación)
       const allDataResponse = await scheduleService.getClientSchedule(clientInfo.cliente_id, {
-        page_size: 1000, // Suficiente para todos los datos
+        all: true
       });
       
       setSchedule(response.results);
       setFilteredSchedule(response.results);
       setAllScheduleData(allDataResponse.results); // Para gráficas
-      setTotalItems(response.count);
-      setTotalPages(Math.ceil(response.count / itemsPerPage));
+      
+      if (!showAll && response.count !== undefined) {
+        setTotalItems(response.count);
+        setTotalPages(response.total_pages || Math.ceil(response.count / itemsPerPage));
+      } else if (showAll) {
+        setTotalItems(response.results.length);
+        setTotalPages(1);
+      }
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cargar el cronograma');
     } finally {
       setIsLoading(false);
     }
-  }, [clientInfo, currentPage, itemsPerPage]);
+  }, [clientInfo, currentPage, itemsPerPage, showAll]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -80,6 +88,20 @@ export default function SchedulePage() {
       loadSchedule();
     }
   }, [isAuthenticated, clientInfo, router, loadSchedule]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (pageSize: number) => {
+    setItemsPerPage(pageSize);
+    setCurrentPage(1);
+  };
+
+  const handleShowAll = () => {
+    setShowAll(!showAll);
+    setCurrentPage(1);
+  };
 
   // Funciones de filtrado
   const applyFilters = useCallback(() => {
@@ -463,27 +485,20 @@ export default function SchedulePage() {
               </table>
             </div>
             
-            {/* Paginación */}
-            {totalPages > 1 && (
-              <div className="flex justify-between items-center mt-6">
-                <Button
-                  onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
-                  disabled={currentPage === 1}
-                  variant="secondary"
-                >
-                  Anterior
-                </Button>
-                <span className="text-sm text-roda-gray-700">
-                  Página {currentPage} de {totalPages} ({totalItems} resultados)
-                </span>
-                <Button
-                  onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
-                  disabled={currentPage === totalPages}
-                  variant="secondary"
-                >
-                  Siguiente
-                </Button>
-              </div>
+            {/* Controles de paginación */}
+            {!isLoading && !error && filteredSchedule.length > 0 && (
+              <PaginationControls
+                currentPage={currentPage}
+                totalPages={totalPages}
+                totalItems={totalItems}
+                itemsPerPage={itemsPerPage}
+                onPageChange={handlePageChange}
+                onPageSizeChange={handlePageSizeChange}
+                showAllOption={true}
+                onShowAll={handleShowAll}
+                isShowingAll={showAll}
+                className="mt-6"
+              />
             )}
           </CardContent>
         </Card>

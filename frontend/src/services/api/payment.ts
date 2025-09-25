@@ -45,6 +45,7 @@ export interface PaymentFilters {
   page_size?: number;
   ordenar_por?: string;
   orden?: string;
+  all?: boolean;
 }
 
 class PaymentService {
@@ -67,9 +68,12 @@ class PaymentService {
 
   // Obtener pagos del cliente
   async getClientPayments(clientId: number, filters?: PaymentFilters): Promise<{
-    count: number;
-    next: string | null;
-    previous: string | null;
+    count?: number;
+    next?: string | null;
+    previous?: string | null;
+    total_pages?: number;
+    current_page?: number;
+    page_size?: number;
     results: Payment[];
   }> {
     const params = new URLSearchParams();
@@ -83,14 +87,24 @@ class PaymentService {
     if (filters?.estado) params.append('estado', filters.estado);
     if (filters?.page) params.append('page', filters.page.toString());
     if (filters?.page_size) params.append('page_size', filters.page_size.toString());
+    if (filters?.all) params.append('all', 'true');
 
     const queryString = params.toString();
     const endpoint = `${API_ENDPOINTS.PAGOS}/?${queryString}`;
+    
+    // Si se solicitan todos los resultados, el backend retorna directamente el array
+    if (filters?.all) {
+      const results = await this.request<Payment[]>(endpoint);
+      return { results };
+    }
     
     return this.request<{
       count: number;
       next: string | null;
       previous: string | null;
+      total_pages: number;
+      current_page: number;
+      page_size: number;
       results: Payment[];
     }>(endpoint);
   }

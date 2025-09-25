@@ -3,6 +3,7 @@
 import { StatusBadge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { PaginationControls } from '@/components/ui/Pagination';
 import { useAuth } from '@/contexts/AuthContext';
 import { Credit, creditService, CreditSummary } from '@/services/api';
 import { useRouter } from 'next/navigation';
@@ -16,12 +17,11 @@ export default function CreditsPage() {
   const [summary, setSummary] = useState<CreditSummary | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage] = useState(1);
-  // Variables de paginación para futuro uso
-  // const [totalPages, setTotalPages] = useState(1);
-  // const [totalItems, setTotalItems] = useState(0);
-  
-  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [showAll, setShowAll] = useState(false);
 
   const loadCredits = useCallback(async () => {
     if (!clientInfo) return;
@@ -30,15 +30,22 @@ export default function CreditsPage() {
     setError(null);
 
     try {
-      // Solo obtener los créditos sin filtros
+      // Obtener créditos con paginación o todos si showAll está activado
       const response = await creditService.getClientCredits(clientInfo.cliente_id, {
-        page: currentPage,
-        page_size: itemsPerPage,
+        page: showAll ? undefined : currentPage,
+        page_size: showAll ? undefined : itemsPerPage,
+        all: showAll,
       });
       
       setCredits(response.results);
-      // setTotalItems(response.count);
-      // setTotalPages(Math.ceil(response.count / itemsPerPage));
+      
+      if (!showAll && response.count !== undefined) {
+        setTotalItems(response.count);
+        setTotalPages(response.total_pages || Math.ceil(response.count / itemsPerPage));
+      } else if (showAll) {
+        setTotalItems(response.results.length);
+        setTotalPages(1);
+      }
 
       // Consumir resumen real del backend que incluye pagos
       const serverSummary = await creditService.getCreditSummary(clientInfo.cliente_id);
@@ -48,7 +55,7 @@ export default function CreditsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [clientInfo, currentPage, itemsPerPage]);
+  }, [clientInfo, currentPage, itemsPerPage, showAll]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -60,6 +67,20 @@ export default function CreditsPage() {
       loadCredits();
     }
   }, [isAuthenticated, clientInfo, router, loadCredits]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (pageSize: number) => {
+    setItemsPerPage(pageSize);
+    setCurrentPage(1);
+  };
+
+  const handleShowAll = () => {
+    setShowAll(!showAll);
+    setCurrentPage(1);
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -378,6 +399,22 @@ export default function CreditsPage() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Controles de paginación */}
+      {!isLoading && !error && credits.length > 0 && (
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          showAllOption={true}
+          onShowAll={handleShowAll}
+          isShowingAll={showAll}
+          className="mt-6"
+        />
       )}
     </div>
   );

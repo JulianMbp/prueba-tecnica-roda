@@ -44,6 +44,7 @@ export interface CreditFilters {
   orden?: 'asc' | 'desc';
   page?: number;
   page_size?: number;
+  all?: boolean;
 }
 
 class CreditService {
@@ -66,9 +67,12 @@ class CreditService {
 
   // Obtener créditos del cliente
   async getClientCredits(clientId: number, filters?: CreditFilters): Promise<{
-    count: number;
-    next: string | null;
-    previous: string | null;
+    count?: number;
+    next?: string | null;
+    previous?: string | null;
+    total_pages?: number;
+    current_page?: number;
+    page_size?: number;
     results: Credit[];
   }> {
     const params = new URLSearchParams();
@@ -84,14 +88,24 @@ class CreditService {
     if (filters?.orden) params.append('orden', filters.orden);
     if (filters?.page) params.append('page', filters.page.toString());
     if (filters?.page_size) params.append('page_size', filters.page_size.toString());
+    if (filters?.all) params.append('all', 'true');
 
     const queryString = params.toString();
     const endpoint = `${API_ENDPOINTS.CREDITOS}/?${queryString}`;
+    
+    // Si se solicitan todos los resultados, el backend retorna directamente el array
+    if (filters?.all) {
+      const results = await this.request<Credit[]>(endpoint);
+      return { results };
+    }
     
     return this.request<{
       count: number;
       next: string | null;
       previous: string | null;
+      total_pages: number;
+      current_page: number;
+      page_size: number;
       results: Credit[];
     }>(endpoint);
   }

@@ -3,8 +3,9 @@
 import { StatusBadge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
+import { PaginationControls } from '@/components/ui/Pagination';
 import { useAuth } from '@/contexts/AuthContext';
-import { Payment, paymentService, PaymentSummary } from '@/services/api';
+import { Payment, paymentService, PaymentSummaryType } from '@/services/api';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -13,15 +14,14 @@ export default function PaymentsPage() {
   const router = useRouter();
   
   const [payments, setPayments] = useState<Payment[]>([]);
-  const [summary, setSummary] = useState<PaymentSummary | null>(null);
+  const [summary, setSummary] = useState<PaymentSummaryType | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [currentPage] = useState(1);
-  // Variables de paginación para futuro uso
-  // const [totalPages, setTotalPages] = useState(1);
-  // const [totalItems, setTotalItems] = useState(0);
-  
-  const itemsPerPage = 10;
+  const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [itemsPerPage, setItemsPerPage] = useState(10);
+  const [showAll, setShowAll] = useState(false);
 
   const loadPayments = useCallback(async () => {
     if (!clientInfo) return;
@@ -30,15 +30,22 @@ export default function PaymentsPage() {
     setError(null);
 
     try {
-      // Solo obtener los pagos sin filtros
+      // Obtener pagos con paginación o todos si showAll está activado
       const response = await paymentService.getClientPayments(clientInfo.cliente_id, {
-        page: currentPage,
-        page_size: itemsPerPage,
+        page: showAll ? undefined : currentPage,
+        page_size: showAll ? undefined : itemsPerPage,
+        all: showAll,
       });
       
       setPayments(response.results);
-      // setTotalItems(response.count);
-      // setTotalPages(Math.ceil(response.count / itemsPerPage));
+      
+      if (!showAll && response.count !== undefined) {
+        setTotalItems(response.count);
+        setTotalPages(response.total_pages || Math.ceil(response.count / itemsPerPage));
+      } else if (showAll) {
+        setTotalItems(response.results.length);
+        setTotalPages(1);
+      }
 
       // Usar el resumen real del backend
       const serverSummary = await paymentService.getPaymentSummary(clientInfo.cliente_id);
@@ -48,7 +55,7 @@ export default function PaymentsPage() {
     } finally {
       setIsLoading(false);
     }
-  }, [clientInfo, currentPage, itemsPerPage]);
+  }, [clientInfo, currentPage, itemsPerPage, showAll]);
 
   useEffect(() => {
     if (!isAuthenticated) {
@@ -60,6 +67,20 @@ export default function PaymentsPage() {
       loadPayments();
     }
   }, [isAuthenticated, clientInfo, router, loadPayments]);
+
+  const handlePageChange = (page: number) => {
+    setCurrentPage(page);
+  };
+
+  const handlePageSizeChange = (pageSize: number) => {
+    setItemsPerPage(pageSize);
+    setCurrentPage(1);
+  };
+
+  const handleShowAll = () => {
+    setShowAll(!showAll);
+    setCurrentPage(1);
+  };
 
   const formatCurrency = (amount: number) => {
     return new Intl.NumberFormat('es-CO', {
@@ -304,6 +325,22 @@ export default function PaymentsPage() {
             </div>
           </CardContent>
         </Card>
+      )}
+
+      {/* Controles de paginación */}
+      {!isLoading && !error && payments.length > 0 && (
+        <PaginationControls
+          currentPage={currentPage}
+          totalPages={totalPages}
+          totalItems={totalItems}
+          itemsPerPage={itemsPerPage}
+          onPageChange={handlePageChange}
+          onPageSizeChange={handlePageSizeChange}
+          showAllOption={true}
+          onShowAll={handleShowAll}
+          isShowingAll={showAll}
+          className="mt-6"
+        />
       )}
     </div>
   );

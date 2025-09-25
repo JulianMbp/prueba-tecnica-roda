@@ -101,9 +101,19 @@ class Command(BaseCommand):
         medios = ['app', 'efectivo', 'link']
         
         for schedule in schedules:
-            if random.random() < 0.7:  # 70% de probabilidad de pago
-                # Pago parcial o completo
-                factor_pago = random.choice([Decimal('0.5'), Decimal('1.0')]) if random.random() < 0.7 else Decimal('0.5')
+            # Replicar la lógica exacta del SQL de referencia
+            rand = random.random()
+            if rand < 0.3:
+                # 30% probabilidad de pago parcial
+                factor_pago = Decimal('0.5')
+            elif rand < 0.7:
+                # 40% probabilidad de pago completo
+                factor_pago = Decimal('1.0')
+            else:
+                # 30% probabilidad de NO PAGO
+                factor_pago = Decimal('0')
+            
+            if factor_pago > 0:  # Solo crear pago si factor_pago > 0
                 monto_pago = round(float(schedule.valor_cuota * factor_pago), -1)
                 
                 # Fecha de pago (puede ser antes o después del vencimiento)

@@ -61,12 +61,12 @@ export function ClientInfo({ client, summary, estadoActual }: ClientInfoProps) {
           <div className="space-y-2">
             <h4 className="font-medium text-roda-gray-900">Resumen Financiero</h4>
             <div className="text-sm text-roda-gray-600 space-y-1">
-              <p><strong>Total Cuotas:</strong> {summary.total_cuotas}</p>
-              <p><strong>Cuotas Pagadas:</strong> {summary.cuotas_pagadas}</p>
-              <p><strong>Cuotas Pendientes:</strong> {summary.cuotas_pendientes}</p>
-              {summary.cuotas_vencidas > 0 && (
+              <p><strong>Total Cuotas:</strong> {summary.total_schedules}</p>
+              <p><strong>Cuotas Pagadas:</strong> {summary.paid_schedules}</p>
+              <p><strong>Cuotas Pendientes:</strong> {summary.pending_schedules}</p>
+              {summary.overdue_schedules > 0 && (
                 <p className="text-roda-error">
-                  <strong>Cuotas Vencidas:</strong> {summary.cuotas_vencidas}
+                  <strong>Cuotas Vencidas:</strong> {summary.overdue_schedules}
                 </p>
               )}
             </div>
@@ -76,24 +76,24 @@ export function ClientInfo({ client, summary, estadoActual }: ClientInfoProps) {
           <div className="space-y-2">
             <h4 className="font-medium text-roda-gray-900">Montos</h4>
             <div className="text-sm text-roda-gray-600 space-y-1">
-              <p><strong>Total:</strong> {formatCurrency(summary.total_monto)}</p>
-              <p><strong>Pagado:</strong> {formatCurrency(summary.monto_pagado)}</p>
-              <p><strong>Pendiente:</strong> {formatCurrency(summary.monto_pendiente)}</p>
+              <p><strong>Total:</strong> {formatCurrency(summary.total_amount)}</p>
+              <p><strong>Pagado:</strong> {formatCurrency(summary.paid_amount)}</p>
+              <p><strong>Pendiente:</strong> {formatCurrency(summary.pending_amount)}</p>
               <div className="mt-2">
                 <div className="flex justify-between text-xs text-roda-gray-500 mb-1">
                   <span>Progreso</span>
-                  <span>{summary.porcentaje_pagado ? summary.porcentaje_pagado.toFixed(1) : '0.0'}%</span>
+                  <span>{summary.payment_percentage ? summary.payment_percentage.toFixed(1) : '0.0'}%</span>
                 </div>
                 <div className="w-full bg-roda-gray-200 rounded-full h-2">
                   <div
                     className={`h-2 rounded-full transition-all duration-300 ${
-                      (summary.porcentaje_pagado || 0) >= 80
+                      (summary.payment_percentage || 0) >= 80
                         ? 'bg-roda-success'
-                        : (summary.porcentaje_pagado || 0) >= 50
+                        : (summary.payment_percentage || 0) >= 50
                         ? 'bg-roda-warning'
                         : 'bg-roda-error'
                     }`}
-                    style={{ width: `${Math.min(summary.porcentaje_pagado || 0, 100)}%` }}
+                    style={{ width: `${Math.min(summary.payment_percentage || 0, 100)}%` }}
                   />
                 </div>
               </div>

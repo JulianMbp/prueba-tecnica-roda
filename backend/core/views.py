@@ -225,6 +225,55 @@ class CreditoViewSet(viewsets.ModelViewSet):
                 status=status.HTTP_404_NOT_FOUND
             )
 
+    @action(detail=False, methods=['get'])
+    def resumen(self, request):
+        """Resumen agregado de créditos del cliente incluyendo pagos.
+
+        Respuesta:
+        {
+          total_creditos,
+          creditos_vigentes,
+          creditos_cancelados,
+          creditos_castigados,
+          inversion_total,
+          inversion_vigente,
+          monto_pagado_total,
+          monto_pendiente_total
+        }
+        """
+        cliente_id = request.query_params.get('cliente_id')
+        if not cliente_id:
+            return Response(
+                {'error': 'Parámetro cliente_id es requerido'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Créditos del cliente
+        qs = Credito.objects.filter(cliente_id=cliente_id)
+        total_creditos = qs.count()
+        creditos_vigentes = qs.filter(estado='vigente').count()
+        creditos_cancelados = qs.filter(estado='cancelado').count()
+        creditos_castigados = qs.filter(estado='castigado').count()
+        inversion_total = float(sum(c.inversion for c in qs))
+        inversion_vigente = float(sum(c.inversion for c in qs.filter(estado='vigente')))
+
+        # Totales pagados/pedientes desde cronograma
+        schedules = PaymentSchedule.objects.filter(credito__cliente_id=cliente_id)
+        monto_pagado_total = float(sum(s.monto_pagado for s in schedules))
+        monto_total_cuotas = float(sum(s.valor_cuota for s in schedules))
+        monto_pendiente_total = max(monto_total_cuotas - monto_pagado_total, 0)
+
+        return Response({
+            'total_creditos': total_creditos,
+            'creditos_vigentes': creditos_vigentes,
+            'creditos_cancelados': creditos_cancelados,
+            'creditos_castigados': creditos_castigados,
+            'inversion_total': inversion_total,
+            'inversion_vigente': inversion_vigente,
+            'monto_pagado_total': monto_pagado_total,
+            'monto_pendiente_total': monto_pendiente_total,
+        })
+
 
 class PaymentScheduleViewSet(viewsets.ReadOnlyModelViewSet):
     """ViewSet para consulta de cronograma de pagos"""

@@ -122,6 +122,7 @@ class Command(BaseCommand):
                 
                 Pago.objects.create(
                     schedule=schedule,
+                    credito=schedule.credito,
                     fecha_pago=fecha_pago,
                     monto=monto_pago,
                     medio=random.choice(medios)

@@ -6,10 +6,37 @@ from .credit_serializers import CreditSerializer
 class PaymentSerializer(serializers.ModelSerializer):
     """Serializer for Payment entity"""
     
+    cuota_info = serializers.SerializerMethodField()
+    credito_info = serializers.SerializerMethodField()
+
     class Meta:
         model = Payment
         fields = '__all__'
         read_only_fields = ('pago_id',)
+
+    def get_cuota_info(self, obj):
+        """Información resumida de la cuota y crédito asociado para UI"""
+        schedule = getattr(obj, 'schedule', None)
+        if not schedule:
+            return None
+        credito = getattr(schedule, 'credito', None)
+        return {
+            'num_cuota': getattr(schedule, 'num_cuota', None),
+            'fecha_vencimiento': getattr(schedule, 'fecha_vencimiento', None),
+            'valor_cuota': float(getattr(schedule, 'valor_cuota', 0) or 0),
+            'estado': getattr(schedule, 'estado', None),
+            'producto': getattr(credito, 'producto', None) if credito else None,
+        }
+
+    def get_credito_info(self, obj):
+        credito = getattr(obj, 'credito', None) or getattr(getattr(obj, 'schedule', None), 'credito', None)
+        if not credito:
+            return None
+        return {
+            'credito_id': getattr(credito, 'credito_id', None),
+            'producto': getattr(credito, 'producto', None),
+            'cliente_id': getattr(credito, 'cliente_id', None),
+        }
 
 
 class PaymentScheduleSerializer(serializers.ModelSerializer):

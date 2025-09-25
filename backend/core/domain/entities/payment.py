@@ -14,6 +14,14 @@ class Payment(models.Model):
     ]
     
     pago_id = models.BigAutoField(primary_key=True)
+    credito = models.ForeignKey(
+        'Credit',
+        on_delete=models.CASCADE,
+        related_name='pagos',
+        help_text="Credit this payment contributes to",
+        null=True,  # se establece NOT NULL en migración posterior al backfill
+        blank=True
+    )
     schedule = models.ForeignKey(
         'PaymentSchedule',
         on_delete=models.CASCADE,

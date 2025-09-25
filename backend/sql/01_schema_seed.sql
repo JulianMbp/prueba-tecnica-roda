@@ -36,6 +36,7 @@ CREATE TABLE IF NOT EXISTS core.payment_schedule (
 CREATE TABLE IF NOT EXISTS core.pagos (
   pago_id      BIGSERIAL PRIMARY KEY,
   schedule_id  BIGINT NOT NULL REFERENCES core.payment_schedule(schedule_id),
+  credito_id   BIGINT NOT NULL REFERENCES core.creditos(credito_id),
   fecha_pago   TIMESTAMPTZ NOT NULL,
   monto        NUMERIC(12,2) NOT NULL,
   medio        TEXT
@@ -44,6 +45,7 @@ CREATE TABLE IF NOT EXISTS core.pagos (
 -- Índices mínimos
 CREATE INDEX IF NOT EXISTS ix_ps_credito_cuota ON core.payment_schedule(credito_id, num_cuota);
 CREATE INDEX IF NOT EXISTS ix_pagos_schedule_fecha ON core.pagos(schedule_id, fecha_pago);
+CREATE INDEX IF NOT EXISTS ix_pagos_credito_fecha ON core.pagos(credito_id, fecha_pago);
 
 -- Seed rápido (datos realistas):
 -- Clientes (10), créditos (20), cuotas mensuales (6–12), pagos variados
@@ -75,8 +77,9 @@ FROM core.creditos cr
 JOIN LATERAL generate_series(1, cr.cuotas_totales) n ON TRUE;
 
 -- Pagos: 0–2 por cuota (algunos atrasados, parciales, completos)
-INSERT INTO core.pagos (schedule_id, fecha_pago, monto, medio)
+INSERT INTO core.pagos (schedule_id, credito_id, fecha_pago, monto, medio)
 SELECT ps.schedule_id,
+       ps.credito_id,
        (ps.fecha_vencimiento + ((-5 + (random()*15)::int)) * INTERVAL '1 day'),
        round((ps.valor_cuota * (CASE WHEN random() < 0.3 THEN 0.5 WHEN random()<0.7 THEN 1 ELSE 0 END))::numeric, -1),
        (ARRAY['app','efectivo','link'])[1 + (random()*2)::int]

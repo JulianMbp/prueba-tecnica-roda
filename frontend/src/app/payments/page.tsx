@@ -4,7 +4,7 @@ import { StatusBadge } from '@/components/ui/Badge';
 import { Button } from '@/components/ui/Button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/Card';
 import { useAuth } from '@/contexts/AuthContext';
-import { Payment, paymentService, PaymentSummaryType } from '@/services/api';
+import { Payment, paymentService, PaymentSummary } from '@/services/api';
 import { useRouter } from 'next/navigation';
 import { useCallback, useEffect, useState } from 'react';
 
@@ -13,7 +13,7 @@ export default function PaymentsPage() {
   const router = useRouter();
   
   const [payments, setPayments] = useState<Payment[]>([]);
-  const [summary, setSummary] = useState<PaymentSummaryType | null>(null);
+  const [summary, setSummary] = useState<PaymentSummary | null>(null);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [currentPage] = useState(1);
@@ -40,31 +40,9 @@ export default function PaymentsPage() {
       // setTotalItems(response.count);
       // setTotalPages(Math.ceil(response.count / itemsPerPage));
 
-      // Crear resumen básico desde los datos obtenidos
-      const totalPagos = response.count;
-      const montoTotalPagado = response.results.reduce((sum, p) => sum + parseFloat(p.monto), 0);
-      const pagosPorMedio = response.results.reduce((acc, p) => {
-        if (!acc[p.medio]) {
-          acc[p.medio] = { cantidad: 0, monto_total: 0 };
-        }
-        acc[p.medio].cantidad++;
-        acc[p.medio].monto_total += parseFloat(p.monto);
-        return acc;
-      }, {} as Record<string, { cantidad: number; monto_total: number }>);
-      
-      const ultimoPago = response.results.length > 0 ? {
-        fecha: response.results[0].fecha_pago,
-        monto: parseFloat(response.results[0].monto),
-        medio: response.results[0].medio,
-        cuota: 1 // Placeholder
-      } : null;
-      
-      setSummary({
-        total_pagos: totalPagos,
-        monto_total_pagado: montoTotalPagado,
-        pagos_por_medio: pagosPorMedio,
-        ultimo_pago: ultimoPago!,
-      });
+      // Usar el resumen real del backend
+      const serverSummary = await paymentService.getPaymentSummary(clientInfo.cliente_id);
+      setSummary(serverSummary);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cargar los pagos');
     } finally {

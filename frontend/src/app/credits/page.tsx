@@ -40,21 +40,9 @@ export default function CreditsPage() {
       // setTotalItems(response.count);
       // setTotalPages(Math.ceil(response.count / itemsPerPage));
 
-      // Crear resumen básico desde los datos obtenidos
-      const totalCreditos = response.count;
-      const creditosVigentes = response.results.filter(c => c.estado === 'vigente').length;
-      const inversionTotal = response.results.reduce((sum, c) => sum + parseFloat(c.inversion), 0);
-      
-      setSummary({
-        total_creditos: totalCreditos,
-        creditos_vigentes: creditosVigentes,
-        creditos_cancelados: 0,
-        creditos_castigados: 0,
-        inversion_total: inversionTotal,
-        inversion_vigente: inversionTotal,
-        monto_pagado_total: 0,
-        monto_pendiente_total: inversionTotal,
-      });
+      // Consumir resumen real del backend que incluye pagos
+      const serverSummary = await creditService.getCreditSummary(clientInfo.cliente_id);
+      setSummary(serverSummary);
     } catch (err) {
       setError(err instanceof Error ? err.message : 'Error al cargar los créditos');
     } finally {
@@ -304,6 +292,20 @@ export default function CreditsPage() {
                       </p>
                     </div>
                   </div>
+
+                  {/* Pagos asociados al crédito y cuotas restantes */}
+                  {credit.resumen && (
+                    <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                      <div>
+                        <p className="text-xs sm:text-sm text-roda-gray-600">Pagos aplicados</p>
+                        <p className="font-semibold text-sm sm:text-base">{credit.resumen.pagos_asociados ?? 0}</p>
+                      </div>
+                      <div>
+                        <p className="text-xs sm:text-sm text-roda-gray-600">Cuotas restantes</p>
+                        <p className="font-semibold text-sm sm:text-base">{credit.resumen.cuotas_restantes ?? Math.max(credit.cuotas_totales - (credit.resumen?.cuotas_pagadas || 0), 0)}</p>
+                      </div>
+                    </div>
+                  )}
 
                   {/* Fechas importantes */}
                   <div className="space-y-2">

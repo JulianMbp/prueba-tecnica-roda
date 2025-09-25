@@ -14,9 +14,13 @@ export interface Credit {
   resumen?: {
     cuotas_pagadas: number;
     cuotas_pendientes: number;
+    cuotas_vencidas?: number;
+    cuotas_restantes?: number;
     monto_pagado: number;
     monto_pendiente: number;
     porcentaje_pagado: number;
+    pagos_asociados?: number;
+    ultima_fecha_pago?: string | null;
   };
 }
 

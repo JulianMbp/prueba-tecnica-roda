@@ -28,6 +28,10 @@ export interface PaymentSchedule {
 }
 
 export interface PaymentSummary {
+  monto_total_pagado(monto_total_pagado: any): import("react").ReactNode;
+  total_pagos: ReactNode;
+  pagos_por_medio(pagos_por_medio: any): unknown;
+  ultimo_pago: PaymentSummary | null;
   total_schedules: number;
   paid_schedules: number;
   overdue_schedules: number;

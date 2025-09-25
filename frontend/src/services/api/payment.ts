@@ -3,6 +3,7 @@ import { API_ENDPOINTS, buildApiUrl } from '@/config/api';
 export interface Payment {
   pago_id: number;
   schedule: number;
+  credito?: number;
   fecha_pago: string;
   monto: string;
   medio: string;
@@ -12,6 +13,11 @@ export interface Payment {
     valor_cuota: number;
     estado: string;
     producto: string;
+  };
+  credito_info?: {
+    credito_id: number;
+    producto: string;
+    cliente_id: number;
   };
 }
 

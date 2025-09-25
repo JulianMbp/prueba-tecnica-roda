@@ -13,5 +13,13 @@ export const API_ENDPOINTS = {
 
 // Helper function to build full URL
 export const buildApiUrl = (endpoint: string): string => {
-  return `${API_BASE_URL}/${endpoint}`;
+  // Normalizar base (sin slash final)
+  const normalizedBase = API_BASE_URL.replace(/\/+$/, '');
+  // Asegurar que la base incluya "/api" exactamente una vez
+  const baseWithApi = normalizedBase.endsWith('/api')
+    ? normalizedBase
+    : `${normalizedBase}/api`;
+  // Normalizar endpoint (sin slash inicial)
+  const normalizedEndpoint = endpoint.replace(/^\/+/, '');
+  return `${baseWithApi}/${normalizedEndpoint}`;
 };
